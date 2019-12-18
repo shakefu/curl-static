@@ -2,6 +2,10 @@
 
 Docker images containing a static build of curl.
 
+## Tags
+
+- [latest](https://github.com/shakefu/curl-static/blob/master/Dockerfile.glibc) - based on [busybox:glibc](https://hub.docker.com/_/busybox)
+
 ## Usage
 
 This image can be used standalone to run `curl` or can be used as a base image
