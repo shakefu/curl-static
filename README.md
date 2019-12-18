@@ -22,7 +22,7 @@ docker run shakefu/curl-static -sL 'https://github.com/shakefu/curl-static/archi
 
 ### Using in a multistage build
 
-```docker
+```dockerfile
 FROM shakefu/curl-static AS curl
 
 # This stage used for curl binary
