@@ -17,6 +17,10 @@ RUN apt-get update -yqq &&\
     cd /usr/local/src &&\
     curl -sL https://github.com/curl/curl/releases/download/curl-$(echo "$CURL" | tr . _)/curl-$CURL.tar.gz | tar -xz &&\
     cd /usr/local/src/curl-$CURL &&\
+    # https://github.com/dtschan/curl-static/blob/master/build.sh
+    # https://curl.haxx.se/docs/install.html
+    # https://github.com/curl/curl-docker/blob/master/Makefile
+    # https://github.com/curl/curl-docker/blob/master/alpine/latest/Dockerfile
     ./buildconf &&\
     autoreconf -vif &&\
     LIBS="-ldl -lpthread" ./configure \
