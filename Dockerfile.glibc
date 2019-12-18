@@ -1,0 +1,49 @@
+ARG CURL=7.67.0
+
+FROM ubuntu:19.10 AS build
+
+ARG CURL
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update -yqq &&\
+    apt-get upgrade -yqq &&\
+    apt-get install -yqq \
+        autoconf \
+        build-essential \
+        curl \
+        libssl-dev \
+        libtool &&\
+    cd /usr/local/src &&\
+    curl -sL https://github.com/curl/curl/releases/download/curl-$(echo "$CURL" | tr . _)/curl-$CURL.tar.gz | tar -xz &&\
+    cd /usr/local/src/curl-$CURL &&\
+    ./buildconf &&\
+    autoreconf -vif &&\
+    LIBS="-ldl -lpthread" ./configure \
+        --disable-ares \
+        --disable-ldap \
+        --disable-manual \
+        --disable-shared \
+        --disable-unix-sockets \
+        --disable-verbose \
+        --disable-versioned-symbols \
+        --enable-static \
+        --prefix=/usr/local \
+        --with-ca-fallback \
+        --with-ssl \
+        --without-libidn \
+        --without-librtmp &&\
+    make curl_LDFLAGS=-all-static &&\
+    make install
+
+# glibc is required otherwise curl cannot make DNS lookups
+FROM busybox:glibc AS final
+
+# Purloin a modern CA for resolution of SSL certs
+COPY --from=build /etc/ssl /etc/ssl
+# Get our curl command
+COPY --from=build /usr/local/bin/curl /usr/local/bin/curl
+# Sane and sensible place to put stuff
+WORKDIR /usr/local/src
+
+ENTRYPOINT ["/usr/local/bin/curl"]
