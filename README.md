@@ -15,14 +15,14 @@ by libcurl's DNS resolver, and without them DNS will not work.
 
 ### Running from container
 
-```
+```bash
 # Using curl to download to the host system
 docker run shakefu/curl-static -sL 'https://github.com/shakefu/curl-static/archive/master.tgz' > curl-static.tgz
 ```
 
 ### Using in a multistage build
 
-```
+```docker
 FROM shakefu/curl-static AS curl
 
 # This stage used for curl binary
